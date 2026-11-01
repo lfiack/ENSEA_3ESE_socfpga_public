@@ -3,6 +3,8 @@ Cours, TD et TP SoCFPGA sur DE10
 
 ## Installation Debian VM
 
+Voir la [Vidéo](https://youtu.be/ryTIv9PtaYE).
+
 Cours et TD en salle BYOD, il faudra Linux pour les démos. Vous devrez mettre en place une machine virtuelle.
 Vocabulaire :
 * VM : Virtual Machine = Machine virtuelle
