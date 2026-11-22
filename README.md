@@ -1,6 +1,14 @@
 # ENSEA 3ESE SoCFPGA Public
 Cours, TD et TP SoCFPGA sur DE10
 
+## TP
+
+Les TP de Linux/SoC-FPGA sont disponibles ci-dessous :
+* [tp1](tp/tp1.md)
+* [tp2](tp/tp1.md)
+* [tp3](tp/tp1.md)
+* [tp4](tp/tp1.md) (en construction)
+
 ## Installation Debian VM
 
 Voir la [Vidéo](https://youtu.be/ryTIv9PtaYE).
