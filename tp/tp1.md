@@ -300,10 +300,20 @@ sudo debootstrap --arch=armhf --foreign trixie rootfs
 
 1. Lancez les commande suivantes :
 
+> Sous EOS (D060) :
+
 ```bash
 sudo cp /usr/bin/qemu-arm-static rootfs/usr/bin/
 
 sudo chroot rootfs /usr/bin/qemu-arm-static /bin/bash -i
+
+/debootstrap/debootstrap --second-stage
+```
+
+> Sous Ubuntu (C106) :
+
+```bash
+sudo chroot rootfs /bin/bash -i
 
 /debootstrap/debootstrap --second-stage
 ```
