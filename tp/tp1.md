@@ -425,6 +425,10 @@ sudo dd if=/dev/zero of=sdcard.img bs=2G count=1
 sudo losetup --show -f sdcard.img
 ```
 
+La commande renvoie le chemin vers le fichier virtuel, notez-le, vous en aurez besoin dans plusieurs commandes :
+
+> `/dev/loopX`
+
 ### Partitionner l'image
 
 Pour que Linux puisse démarrer, il faut 3 partitions comme dans le tableau ci-dessous.
@@ -440,7 +444,7 @@ Pour que Linux puisse démarrer, il faut 3 partitions comme dans le tableau ci-d
 2. Utilisez l'outil ```fdisk``` pour partitionner le fichier.
 
 ```bash
-sudo fdisk /dev/loop0
+sudo fdisk /dev/loopX
 ```
 
 3. Appuyez sur `p` puis `Entrée` pour voir la liste des partitions:
@@ -454,7 +458,7 @@ Device does not contain a recognized partition table.
 Created a new DOS (MBR) disklabel with disk identifier 0x4a4d3a1e.
 
 Command (m for help): p
-Disk /dev/loop0: 2 GiB, 2147479552 bytes, 4194296 sectors
+Disk /dev/loopX: 2 GiB, 2147479552 bytes, 4194296 sectors
 Units: sectors of 1 * 512 = 512 bytes
 Sector size (logical/physical): 512 bytes / 512 bytes
 I/O size (minimum/optimal): 512 bytes / 512 bytes
@@ -577,7 +581,7 @@ Vous allez garder le type `Linux` pour cette partition.
 
 ```bash
 Command (m for help): p
-Disk /dev/loop0: 2 GiB, 2147479552 bytes, 4194296 sectors
+Disk /dev/loopX: 2 GiB, 2147479552 bytes, 4194296 sectors
 Units: sectors of 1 * 512 = 512 bytes
 Sector size (logical/physical): 512 bytes / 512 bytes
 I/O size (minimum/optimal): 512 bytes / 512 bytes
@@ -585,9 +589,9 @@ Disklabel type: dos
 Disk identifier: 0x4a4d3a1e
 
 Device       Boot  Start     End Sectors  Size Id Type
-/dev/loop0p1        4096  524287  520192  254M  b W95 FAT32
-/dev/loop0p2      524288 4194295 3670008  1,7G 83 Linux
-/dev/loop0p3        2048    4095    2048    1M a2 unknown
+/dev/loopXp1        4096  524287  520192  254M  b W95 FAT32
+/dev/loopXp2      524288 4194295 3670008  1,7G 83 Linux
+/dev/loopXp3        2048    4095    2048    1M a2 unknown
 ```
 
 2. Les partitions créées ne sont pas encore écrites sur le fichier image. Faites le :
@@ -607,27 +611,27 @@ Une erreur indique que les partitions ne sont pas chargées par le noyau.
 3. Si vous tapez :
 
 ```bash
-ls /dev/loop0*
+ls /dev/loopX*
 ```
 
-Vous verrez qu'il n'y a qu'un fichier `/dev/loop0` et que les partitions ne sont pas visibles.
+Vous verrez qu'il n'y a qu'un fichier `/dev/loopX` et que les partitions ne sont pas visibles.
 
 4. Pour y accéder, vous devez taper la commande suivante :
 
 ```bash
-sudo partprobe /dev/loop0
+sudo partprobe /dev/loopX
 ```
 
 5. Elles sont maintenant visibles :
 
 ```bash
-ls /dev/loop0*
+ls /dev/loopX*
 ```
 
 Devrait vous donenr le résultat suivant :
 
 ```bash
-/dev/loop0  /dev/loop0p1  /dev/loop0p2  /dev/loop0p3
+/dev/loopX  /dev/loopXp1  /dev/loopXp2  /dev/loopXp3
 ```
 
 ### Créer les systèmes de fichiers
@@ -636,10 +640,10 @@ Devrait vous donenr le résultat suivant :
 
 ```bash
 # Partition 1 is FAT
-sudo mkfs -t vfat /dev/loop0p1
+sudo mkfs -t vfat /dev/loopXp1
 
 # Partition 2 is Linux
-sudo mkfs.ext4 /dev/loop0p2
+sudo mkfs.ext4 /dev/loopXp2
 ```
 
 ### Writing to the partitions
@@ -653,7 +657,7 @@ La partition bootloader est une partition binaire. Il ne faudra pas la _monter_,
 1. Dans le dossier ```emb/``` :
 ```bash
 cd sdcard
-sudo dd if=../u-boot/u-boot-with-spl.sfp of=/dev/loop0p3 bs=64k seek=0 oflag=sync
+sudo dd if=../u-boot/u-boot-with-spl.sfp of=/dev/loopXp3 bs=64k seek=0 oflag=sync
 ```
 
 #### Partition Kernel et Device Tree
@@ -667,7 +671,7 @@ cd sdcard
 mkdir -p fat
 
 # Mount the fat partition.
-sudo mount /dev/loop0p1 fat
+sudo mount /dev/loopXp1 fat
 
 # Copy the kernel image.
 sudo cp ../linux-socfpga/arch/arm/boot/zImage fat
@@ -698,7 +702,7 @@ cd sdcard
 mkdir -p ext4
 
 # Mount the ext4 partition.
-sudo mount /dev/loop0p2 ext4
+sudo mount /dev/loopXp2 ext4
 
 # Extract the rootfs archive.
 cd ext4
